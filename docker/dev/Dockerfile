@@ -9,7 +9,7 @@ RUN apk --no-cache add \
     openssh-client
 
 # Mock creator
-RUN go get -u github.com/vektra/mockery/.../ 
+RUN export GO111MODULE=on ; go get -u github.com/vektra/mockery/.../ 
 
 RUN mkdir /src
 
