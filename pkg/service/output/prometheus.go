@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -145,7 +146,8 @@ func (p *prometheusOutput) Collect(ch chan<- prometheus.Metric) {
 		var labels map[string]string
 		// Check just in case.
 		if metric.slo.Output.Prometheus != nil && metric.slo.Output.Prometheus.Labels != nil {
-			labels = metric.slo.Output.Prometheus.Labels
+			replacer := strings.NewReplacer(".", "_", "/", "_", "-", "_")
+			labels := replacer.Replace(metric.slo.Output.Prometheus.Labels)
 		}
 
 		ch <- p.getSLIErrorMetric(ns, slName, sloName, labels, metric.errorSum)
