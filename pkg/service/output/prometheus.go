@@ -146,8 +146,11 @@ func (p *prometheusOutput) Collect(ch chan<- prometheus.Metric) {
 		var labels map[string]string
 		// Check just in case.
 		if metric.slo.Output.Prometheus != nil && metric.slo.Output.Prometheus.Labels != nil {
-			replacer := strings.NewReplacer(".", "_", "/", "_", "-", "_")
-			labels := replacer.Replace(metric.slo.Output.Prometheus.Labels)
+			for label, value := range metric.slo.Output.Prometheus.Labels {
+				replacer := strings.NewReplacer(".", "_", "/", "_", "-", "_")
+				plabel := replacer.Replace(label)
+				labels[plabel] = value
+			}
 		}
 
 		ch <- p.getSLIErrorMetric(ns, slName, sloName, labels, metric.errorSum)
